@@ -89,3 +89,31 @@ a {
 a:hover {
   text-decoration: underline;
 }
+
+.dashboard {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.transaction-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 30px;
+}
+
+.transaction-table th,
+.transaction-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+.transaction-table th {
+  background-color: #007bff;
+  color: white;
+}
+
+.chart-container {
+  margin-top: 20px;
+}

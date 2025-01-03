@@ -1,0 +1,5 @@
+.chart-container {
+    position: relative;
+    height: 50vh; /* Hauteur dynamique du graphe */
+    width: 100%; /* S'adapte à la largeur de l'écran */
+  }

@@ -44,6 +44,8 @@ export const updateTransaction = async (transactionId, updatedData) => {
 
 // Supprimer une transaction
 export const deleteTransaction = async (transactionId) => {
-  const response = await axios.delete(`${API_BASE_URL}/${transactionId}`, getAuthHeaders());
+  const response = await axios.delete(`${API_BASE_URL}/${transactionId}`, {
+    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+  });
   return response.data;
 };

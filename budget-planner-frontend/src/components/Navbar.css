@@ -1,48 +1,70 @@
-.navbar {
+.navbar-container {
     display: flex;
-    flex-direction: column;
+    height: 5vh;
+    background-color: #f9f9f9;
+  }
+  
+  .sidebar {
+    width: 250px;
     background-color: #007bff;
-    padding: 10px;
-  }
-  
-  .navbar-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    position: fixed;
+    left: -250px;
+    top: 0;
+    bottom: 0;
     color: white;
+    transition: left 0.3s ease;
+    z-index: 1000;
   }
   
-  .menu-button {
-    background: none;
+  .sidebar.open {
+    left: 0;
+  }
+  
+  .menu-toggle {
+    position: absolute;
+    top: 20px;
+    right: -50px;
+    background-color: #0056b3;
+    color: white;
     border: none;
-    color: white;
-    font-size: 1.5rem;
+    padding: 10px;
+    border-radius: 50%;
     cursor: pointer;
   }
   
   .menu-list {
-    list-style-type: none;
+    list-style: none;
+    padding: 20px;
     margin: 0;
-    padding: 0;
-    display: none;
-    flex-direction: column;
-  }
-  
-  .menu-list.open {
-    display: flex;
   }
   
   .menu-list li {
-    margin: 10px 0;
+    margin: 20px 0;
   }
   
   .menu-list li a {
     text-decoration: none;
     color: white;
-    font-size: 1.2rem;
-    transition: color 0.3s ease;
+    font-size: 18px;
   }
   
   .menu-list li a:hover {
-    color: #ffdd57;
+    text-decoration: underline;
+  }
+  
+  .main-content {
+    flex: 1;
+    margin-left: 250px;
+    padding: 20px;
+    transition: margin-left 0.3s ease;
+  }
+  
+  .user-info {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: #f0f0f0;
+    padding: 10px 15px;
+    border-radius: 20px;
+    font-weight: bold;
   }

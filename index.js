@@ -1,7 +1,7 @@
 require("dotenv").config(); // Charge les variables d'environnement
 const express = require("express");
-const mongoose = require("mongoose"); // Ajout de mongoose pour MongoDB
-const cors = require("cors"); // Ajout de CORS pour gérer les politiques d'origine croisée
+const mongoose = require("mongoose");
+const cors = require("cors");
 
 const app = express();
 
@@ -14,18 +14,24 @@ app.use(
   })
 );
 
+// Middleware global pour logger les requêtes
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  next();
+});
+
 // Importation des routes
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
 const transactionRoutes = require("./routes/transaction");
+const categoryRoutes = require("./routes/category");
 
 // Configuration de l'application
 app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
-
-// Ajouter les routes des transactions
-app.use("/api/transactions", transactionRoutes); // Lier les routes des transactions
+app.use("/api/transactions", transactionRoutes); // Routes des transactions
+app.use("/api/categories", categoryRoutes);
 
 // Variables d'environnement
 const PORT = process.env.PORT || 3000;
@@ -44,6 +50,12 @@ mongoose
 // Route d'accueil
 app.get("/", (req, res) => {
   res.send("Bienvenue sur l'app de planification de budget !");
+});
+
+// Gestionnaire d'erreurs global
+app.use((err, req, res, next) => {
+  console.error("Erreur non gérée :", err.stack);
+  res.status(500).json({ error: "Erreur interne du serveur" });
 });
 
 // Démarrage du serveur
