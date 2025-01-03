@@ -1,84 +1,66 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setLoading(true); // Active le chargement
-    setError(""); // Réinitialise les erreurs
 
     try {
-      const response = await axios.post("http://localhost:3000/api/auth/login", {
-        email,
-        password,
-      });
+      console.log("Tentative de connexion avec :", { email, password }); // Log avant la requête
+      const response = await axios.post(
+        "http://localhost:3000/api/auth/login",
+        {
+          email,
+          password,
+        }
+      );
 
-      // Stocker le token dans le localStorage
+      console.log("Réponse de l'API :", response); // Log de la réponse complète
+      console.log("Token reçu :", response.data.token); // Log du token uniquement
+
+      alert("Connexion réussie !");
+      // Stocker le token dans localStorage
       localStorage.setItem("token", response.data.token);
 
-      // Message de succès
-      alert("Connexion réussie !");
-      
       // Rediriger vers le tableau de bord
-      navigate("/dashboard");
+      window.location.href = "/dashboard";
     } catch (error) {
-      // Gérer les erreurs de connexion
-      setError(
-        error.response && error.response.data.error
-          ? error.response.data.error
-          : "Erreur lors de la connexion"
-      );
-    } finally {
-      setLoading(false); // Désactive le chargement
+      console.error("Erreur lors de la connexion :", error); // Log de l'erreur complète
+      if (error.response && error.response.data) {
+        console.log("Erreur retournée par l'API :", error.response.data.error); // Log du message d'erreur de l'API
+        alert("Erreur : " + error.response.data.error);
+      } else {
+        alert("Une erreur inattendue s'est produite. Vérifiez le backend.");
+      }
     }
   };
 
   return (
-    <div style={{ maxWidth: "400px", margin: "0 auto", textAlign: "center" }}>
+    <div>
       <h1>Connexion</h1>
       <form onSubmit={handleLogin}>
-        <div style={{ marginBottom: "1rem" }}>
+        <div>
           <label>Email :</label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            style={{ width: "100%", padding: "0.5rem", marginTop: "0.5rem" }}
           />
         </div>
-        <div style={{ marginBottom: "1rem" }}>
+        <div>
           <label>Mot de passe :</label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            style={{ width: "100%", padding: "0.5rem", marginTop: "0.5rem" }}
           />
         </div>
-        {error && <p style={{ color: "red" }}>{error}</p>}
-        <button
-          type="submit"
-          style={{
-            padding: "0.5rem 1rem",
-            backgroundColor: "blue",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
-          disabled={loading}
-        >
-          {loading ? "Connexion en cours..." : "Se connecter"}
-        </button>
+        <button type="submit">Se connecter</button>
       </form>
     </div>
   );

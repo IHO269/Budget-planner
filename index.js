@@ -1,17 +1,31 @@
 require("dotenv").config(); // Charge les variables d'environnement
 const express = require("express");
 const mongoose = require("mongoose"); // Ajout de mongoose pour MongoDB
+const cors = require("cors"); // Ajout de CORS pour gérer les politiques d'origine croisée
 
 const app = express();
+
+// Middleware CORS
+app.use(
+  cors({
+    origin: "http://localhost:3001", // L'origine du frontend
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true, // Autorise l'envoi de cookies et headers spécifiques
+  })
+);
 
 // Importation des routes
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
+const transactionRoutes = require("./routes/transaction");
 
 // Configuration de l'application
 app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
+
+// Ajouter les routes des transactions
+app.use("/api/transactions", transactionRoutes); // Lier les routes des transactions
 
 // Variables d'environnement
 const PORT = process.env.PORT || 3000;

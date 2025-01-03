@@ -1,22 +1,35 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
+// Définir le schéma utilisateur
 const userSchema = new mongoose.Schema({
-  username: { type: String, required: true, unique: true },
+  username: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
 });
 
-// Avant de sauvegarder, hacher le mot de passe
+// Middleware `pre` pour hacher le mot de passe avant d'enregistrer
 userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
-  this.password = await bcrypt.hash(this.password, 10);
-  next();
+  const user = this;
+
+  // Vérifiez si le mot de passe est modifié (nouvel utilisateur ou mise à jour)
+  if (!user.isModified("password")) return next();
+
+  try {
+    // Générer un hash pour le mot de passe
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(user.password, salt);
+    next(); // Continuer le processus de sauvegarde
+  } catch (err) {
+    next(err); // Passer l'erreur à Mongoose
+  }
 });
 
-// Méthode pour comparer les mots de passe
-userSchema.methods.comparePassword = async function (password) {
-  return await bcrypt.compare(password, this.password);
+// Méthode pour comparer le mot de passe
+userSchema.methods.comparePassword = async function (candidatePassword) {
+  return bcrypt.compare(candidatePassword, this.password);
 };
 
-module.exports = mongoose.model("User", userSchema);
+// Exporter le modèle utilisateur
+const User = mongoose.model("User", userSchema);
+module.exports = User;
